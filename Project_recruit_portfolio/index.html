@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quality & Inventory Optimization — Kushal Batra (IIT Madras)</title>
+  <meta name="description" content="Industrial Data Science Case Study on Surgical Devices Manufacturing Quality, COPQ ANOVA Econometrics, and ARIMA Inventory Optimization by Kushal Batra (IIT Madras)." />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js for Live Simulations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- MathJax for Rendering LaTeX Formulations -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      startup: {
+        pageReady: () => {
+          return MathJax.startup.defaultPageReady();
+        }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Ambient Glow Effects -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Main Navigation Header (Topmost Bar) -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-microchip"></i></div>
+        <div class="brand-info">
+          <span class="brand-title">
+            <span class="brand-title-full">INDUSTRIAL DATA SCIENCE &amp; OPERATIONS</span>
+            <span class="brand-title-short">DATA SCIENCE &amp; OPS</span>
+          </span>
+          <span class="brand-sub">Medical Device Manufacturing • Quality • COPQ • Inventory</span>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Toggle Navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <nav class="nav-menu" id="navMenu">
+        <a href="#overview" class="nav-item" onclick="closeMobileMenu()">Executive Summary</a>
+        <a href="#problems" class="nav-item" onclick="closeMobileMenu()">Root Cause (4M)</a>
+        <a href="#charts" class="nav-item" onclick="closeMobileMenu()">Empirical Charts</a>
+        <a href="#simulator" class="nav-item" onclick="closeMobileMenu()">Simulation Studio</a>
+        <a href="#math" class="nav-item" onclick="closeMobileMenu()">Statistical Rigor</a>
+        <a href="#datagrid" class="nav-item" onclick="closeMobileMenu()">Primary Data Grid</a>
+        <a href="#code" class="nav-item" onclick="closeMobileMenu()">Code &amp; Scripts</a>
+        <a href="#roi" class="nav-item" onclick="closeMobileMenu()">Business ROI</a>
+      </nav>
+
+      <!-- Theme Switcher (Moon / Sun) -->
+      <div class="nav-actions">
+        <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Dark / Light Mode">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+          <span class="theme-label" id="themeLabel">Dark</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Announcement Bar (Below Navbar) -->
+  <div class="top-announcement">
+    <div class="container top-bar-flex">
+      <div class="top-tag">
+        <span class="live-dot"></span>
+        <span><strong>Primary Field Engagement</strong> • 17 Months Factory Audit • 119 Batches</span>
+      </div>
+      <div class="top-links">
+        <a href="Medical_Device_Analytics_Workbook.xlsx" class="top-action-btn" download><i class="fa-solid fa-file-excel"></i> Excel Model (.xlsx)</a>
+        <a href="medical_device_analysis_pipeline.py" class="top-action-btn" download><i class="fa-brands fa-python"></i> Python Script (.py)</a>
+        <a href="medical_device_charts_notebook.ipynb" class="top-action-btn" download><i class="fa-solid fa-book-open"></i> Jupyter Notebook (.ipynb)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="overview">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="badge-pill">
+            <i class="fa-solid fa-graduation-cap"></i> IIT Madras BS in Data Science & Applications • BDM Capstone
+          </div>
+          <h1 class="hero-title">
+            Surgical Implants Quality & <br/>
+            <span class="gradient-text">Inventory Cost Optimization</span>
+          </h1>
+          <p class="hero-desc">
+            An end-to-end industrial data engineering and operations research audit for an established <strong>ISO/CE-certified medical equipment manufacturing firm</strong>. Audited 17 months of factory floor registers, resolved a counter-intuitive <strong>₹12.02 Lakhs</strong> Cost of Poor Quality (COPQ) paradox via One-Way ANOVA, and engineered a dynamic <strong>EOQ–ROP–ARIMA</strong> supply chain synchronization framework.
+          </p>
+
+          <div class="author-meta-box">
+            <div class="author-avatar"><i class="fa-solid fa-user-gear"></i></div>
+            <div class="author-text">
+              <div class="author-name">Kushal Batra</div>
+              <div class="author-creds">Candidate, BS in Data Science & Applications • IIT Madras (Roll: 24f2000859)</div>
+            </div>
+            <div class="privacy-lock-badge">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>Proprietary Enterprise Data Anonymized</span>
+            </div>
+          </div>
+
+          <div class="hero-action-buttons">
+            <a href="https://www.linkedin.com/in/kushal-batra-615a793a2/" target="_blank" class="btn btn-primary">
+              <i class="fa-brands fa-linkedin"></i> Connect on LinkedIn
+            </a>
+            <a href="https://github.com/iitmkushal2506/iitm_BDM_capstone_project" target="_blank" class="btn btn-secondary">
+              <i class="fa-brands fa-github"></i> View GitHub Repository
+            </a>
+            <a href="mailto:24f2000859@ds.study.iitm.ac.in" class="btn btn-outline">
+              <i class="fa-solid fa-envelope"></i> Contact via Email
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stats-card">
+            <div class="stats-card-header">
+              <span class="stats-title">Audited Operational Baseline</span>
+              <span class="pulse-badge">Verified Primary Data</span>
+            </div>
+
+            <div class="stat-row">
+              <div class="stat-info">
+                <span class="stat-label">Total Manufacturing Volume</span>
+                <span class="stat-num" data-count="152320">1,52,320</span>
+                <span class="stat-detail">Units Produced Across 7 Orthopedic SKUs (Jan 2025 – May 2026)</span>
+              </div>
+              <div class="stat-icon-wrap"><i class="fa-solid fa-industry"></i></div>
+            </div>
+
+            <div class="stat-row danger">
+              <div class="stat-info">
+                <span class="stat-label">Total Quantified COPQ</span>
+                <span class="stat-num danger">₹12,02,530</span>
+                <span class="stat-detail">₹7,84,356 Rework + ₹4,18,174 Scrap (746 Lost Labor Hours)</span>
+              </div>
+              <div class="stat-icon-wrap danger"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            </div>
+
+            <div class="stat-row warning">
+              <div class="stat-info">
+                <span class="stat-label">Dominant Cost Driver SKU</span>
+                <span class="stat-num warning">62.2% <small>Share</small></span>
+                <span class="stat-detail">Plaster Saw (₹7.48L COPQ) despite low 0.97% defect rate (ANOVA p &lt; 0.001)</span>
+              </div>
+              <div class="stat-icon-wrap warning"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            </div>
+
+            <div class="stat-row success">
+              <div class="stat-info">
+                <span class="stat-label">Target Inventory Reliability</span>
+                <span class="stat-num success">95.0% <small>Service Level</small></span>
+                <span class="stat-detail">Dynamic Safety Stock (Z = 1.65) to eliminate stockout recurrence</span>
+              </div>
+              <div class="stat-icon-wrap success"><i class="fa-solid fa-boxes-stacked"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive 4M Ishikawa Root Cause & 5-Whys Section -->
+  <section class="section bg-alt" id="problems">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Interactive Problem Diagnostics</span>
+        <h2 class="section-main-title">4M Ishikawa Root Cause & 5-Whys Diagnostic Explorer</h2>
+        <p class="section-sub-text">Click on any operational dimension below to reveal the empirical 5-Whys root-cause chain identified during on-site plant floor audits.</p>
+      </div>
+
+      <div class="fishbone-container">
+        <div class="fishbone-nav">
+          <button class="fishbone-btn active" onclick="showWhy('machine')"><i class="fa-solid fa-gears"></i> Machine Calibration</button>
+          <button class="fishbone-btn" onclick="showWhy('manpower')"><i class="fa-solid fa-users"></i> Manpower / Operator</button>
+          <button class="fishbone-btn" onclick="showWhy('material')"><i class="fa-solid fa-cubes"></i> Material Inconsistency</button>
+          <button class="fishbone-btn" onclick="showWhy('method')"><i class="fa-solid fa-clipboard-check"></i> Method & QC Gates</button>
+        </div>
+
+        <div class="fishbone-display-box" id="fishboneContent">
+          <!-- Populated by JavaScript dynamically -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Empirical Charts Gallery -->
+  <section class="section" id="charts">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Empirical Evidence & Visual Proof</span>
+        <h2 class="section-main-title">Verified Analytical Chart Gallery</h2>
+        <p class="section-sub-text">All figures generated directly from primary batch records via Python (Matplotlib, SciPy, Statsmodels) without external interpolation.</p>
+      </div>
+
+      <!-- Chart Pillar Navigation -->
+      <div class="chart-tab-bar">
+        <button class="chart-tab-btn active" onclick="switchPillar('pillar-1')">Pillar 1: Quality Control & SPC</button>
+        <button class="chart-tab-btn" onclick="switchPillar('pillar-2')">Pillar 2: COPQ & ANOVA Modeling</button>
+        <button class="chart-tab-btn" onclick="switchPillar('pillar-3')">Pillar 3: Supply Chain & Forecasting</button>
+      </div>
+
+      <!-- Pillar 1 Content -->
+      <div class="pillar-pane active" id="pillar-1">
+        <div class="charts-2col">
+          <div class="figure-card">
+            <div class="figure-header">
+              <span class="fig-badge">Figure 1</span>
+              <h4>Monthly Overall Defect Rate Trend (Jan 2025 – May 2026)</h4>
+            </div>
+            <div class="figure-img-box">
+              <img src="chart1_monthly_defect_rate.png" alt="Monthly Defect Rate Trend" class="responsive-fig" />
+            </div>
+            <div class="figure-footer">
+              <div class="fig-metric-chip"><i class="fa-solid fa-arrow-trend-up text-danger"></i> Slope: +0.038% / Month ($p < 0.001$)</div>
+              <p>Persistent upward drift from 1.00% to 1.63% across 17 months. Pooled monthly mean defect rate: 1.22%.</p>
+            </div>
+          </div>
+
+          <div class="figure-card">
+            <div class="figure-header">
+              <span class="fig-badge">Figure 2</span>
+              <h4>Product-Wise Defect Rate Comparison Across 7 SKUs</h4>
+            </div>
+            <div class="figure-img-box">
+              <img src="chart2_defect_rate_by_product.png" alt="Product-wise Defect Rate" class="responsive-fig" />
+            </div>
+            <div class="figure-footer">
+              <div class="fig-metric-chip"><i class="fa-solid fa-chart-column text-accent"></i> Highest: Needle Holder (1.57%)</div>
+              <p>Needle Holders and Intramedullary Nails (1.56%) had highest defect rates; Bone Plates (0.95%) and Bone Nibblers (0.96%) had lowest.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="figure-card full-width-fig">
+          <div class="figure-header">
+            <span class="fig-badge">Figure 3</span>
+            <h4>Pareto Distribution of Rejection Reasons (Uniform Systemic Failure)</h4>
+          </div>
+          <div class="figure-img-box">
+            <img src="chart3_pareto_rejection.png" alt="Pareto Chart of Rejection Reasons" class="responsive-fig" />
+          </div>
+          <div class="figure-footer">
+            <div class="fig-metric-chip"><i class="fa-solid fa-circle-check text-warning"></i> 6 Failure Modes Evenly Distributed (~19–21 Batches Each)</div>
+            <p><strong>Crucial Root Cause Insight:</strong> Unlike classic Pareto distributions where 80% of defects stem from 20% of causes, rejections occurred equally across Dimension, Burr, Surface, Thread, Material, and Packaging. This proved failures were <em>systemic across machine calibration and operator procedures</em> rather than isolated to one vendor.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pillar 2 Content -->
+      <div class="pillar-pane" id="pillar-2">
+        <div class="charts-2col">
+          <div class="figure-card">
+            <div class="figure-header">
+              <span class="fig-badge">Figure 4</span>
+              <h4>Monthly Cost of Poor Quality (COPQ) Trend (₹ INR)</h4>
+            </div>
+            <div class="figure-img-box">
+              <img src="chart4_monthly_copq.png" alt="Monthly COPQ Trend" class="responsive-fig" />
+            </div>
+            <div class="figure-footer">
+              <div class="fig-metric-chip danger"><i class="fa-solid fa-indian-rupee-sign"></i> Total COPQ: ₹12,02,530</div>
+              <p>Cumulative rework cost: ₹7,84,356; Cumulative scrap cost: ₹4,18,174; Rework labor: 746 technician hours wasted.</p>
+            </div>
+          </div>
+
+          <div class="figure-card">
+            <div class="figure-header">
+              <span class="fig-badge">Figure 5</span>
+              <h4>Product-Wise COPQ Breakdown (The 62.2% Paradox)</h4>
+            </div>
+            <div class="figure-img-box">
+              <img src="chart5_copq_by_product.png" alt="Product-wise COPQ Breakdown" class="responsive-fig" />
+            </div>
+            <div class="figure-footer">
+              <div class="fig-metric-chip warning"><i class="fa-solid fa-scale-unbalanced-flip"></i> Plaster Saw: 62.2% (₹7.48 Lakhs)</div>
+              <p><strong>The Core Mathematical Finding:</strong> Plaster Cutting Saws (0.97% defect) generated ₹7,47,960 of COPQ due to its ₹12,000 unit cost. Top 2 SKUs (Plaster Saw + Wire Cutter) generated 79.5% of all financial losses.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pillar 3 Content -->
+      <div class="pillar-pane" id="pillar-3">
+        <div class="charts-2col">
+          <div class="figure-card">
+            <div class="figure-header">
+              <span class="fig-badge">Figure 6</span>
+              <h4>17-Month Monthly Sales Trajectories Across All 7 SKUs</h4>
+            </div>
+            <div class="figure-img-box">
+              <img src="chart6_sales_trend.png" alt="Monthly Sales Trend" class="responsive-fig" />
+            </div>
+            <div class="figure-footer">
+              <div class="fig-metric-chip text-accent"><i class="fa-solid fa-chart-line"></i> Consistent Growth ($R^2 > 0.80$)</div>
+              <p>Demand grew monotonically across all 7 products, creating chronic stockout vulnerabilities under static moving averages.</p>
+            </div>
+          </div>
+
+          <div class="figure-card">
+            <div class="figure-header">
+              <span class="fig-badge">Figure 7</span>
+              <h4>Average vs. Minimum Closing Stock & Stockout Occurrences</h4>
+            </div>
+            <div class="figure-img-box">
+              <img src="chart7_inventory_stock.png" alt="Inventory Stockout Occurrences" class="responsive-fig" />
+            </div>
+            <div class="figure-footer">
+              <div class="fig-metric-chip danger"><i class="fa-solid fa-triangle-exclamation"></i> 2 Stockout Incidents Recorded</div>
+              <p>Stockouts occurred in Bone Screws (Jul 2025) and Bone Plates (Feb 2026)—the lowest-cost, highest-volume Class C items.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive What-If Simulation Studio -->
+  <section class="section bg-alt" id="simulator">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Interactive Operations Laboratory</span>
+        <h2 class="section-main-title">Dynamic "What-If" Supply Chain & COPQ Simulator</h2>
+        <p class="section-subheading">Simulate live operational trade-offs between defect reduction, supplier lead times, service levels, and recoverable working capital.</p>
+      </div>
+
+      <div class="sim-dashboard-grid">
+        <div class="sim-sidebar">
+          <div class="sim-sidebar-title">Simulation Parameters</div>
+
+          <div class="control-block">
+            <label class="control-label" for="simProductSelect">Target Product SKU:</label>
+            <select id="simProductSelect" class="sim-select" onchange="runSimulation()">
+              <option value="450|2500|79.09|15425|Bone Plate">Bone Plate (₹450 / unit)</option>
+              <option value="120|2950|79.09|6630|Bone Screw">Bone Screw (₹120 / unit)</option>
+              <option value="950|3400|79.09|67298|Intramedullary Nail">Intramedullary Nail (₹950 / unit)</option>
+              <option value="2500|3840|79.09|120175|Bone Nibbler">Bone Nibbler (₹2,500 / unit)</option>
+              <option value="3000|4280|79.09|207690|Wire Cutter">Wire Cutter (₹3,000 / unit)</option>
+              <option value="400|4720|79.09|37352|Needle Holder">Needle Holder (₹400 / unit)</option>
+              <option value="12000|5170|79.09|747960|Plaster Cutting Saw" selected>Plaster Cutting Saw (₹12,000 / unit)</option>
+            </select>
+          </div>
+
+          <div class="control-block">
+            <label class="control-label" for="defectReductionSlider">Target Defect Reduction: <span id="defectRedVal" class="val-pill">35%</span></label>
+            <input type="range" id="defectReductionSlider" min="0" max="60" value="35" class="sim-slider" oninput="runSimulation()" />
+          </div>
+
+          <div class="control-block">
+            <label class="control-label" for="leadTimeSlider">Supplier Lead Time ($L$ in Days): <span id="leadTimeVal" class="val-pill">15 Days</span></label>
+            <input type="range" id="leadTimeSlider" min="5" max="30" value="15" class="sim-slider" oninput="runSimulation()" />
+          </div>
+
+          <div class="control-block">
+            <label class="control-label" for="serviceLevelSelect">Target Cycle Service Level ($Z$-score):</label>
+            <select id="serviceLevelSelect" class="sim-select" onchange="runSimulation()">
+              <option value="1.28">90% Service Level (Z = 1.28)</option>
+              <option value="1.65" selected>95% Service Level (Z = 1.65)</option>
+              <option value="2.33">99% Service Level (Z = 2.33)</option>
+            </select>
+          </div>
+
+          <div class="control-block">
+            <label class="control-label" for="holdingCostSlider">Annual Holding Cost (% of Unit Cost): <span id="holdingCostVal" class="val-pill">20%</span></label>
+            <input type="range" id="holdingCostSlider" min="10" max="35" value="20" class="sim-slider" oninput="runSimulation()" />
+          </div>
+        </div>
+
+        <div class="sim-main-results">
+          <div class="sim-results-cards-grid">
+            <div class="sim-card highlight-success">
+              <span class="sim-card-label">Projected Annual Quality Savings</span>
+              <div class="sim-card-num" id="simCopqSavings">₹2,61,786</div>
+              <span class="sim-card-sub" id="simCopqSub">Recovered from Plaster Saw COPQ</span>
+            </div>
+
+            <div class="sim-card highlight-blue">
+              <span class="sim-card-label">Economic Order Quantity (EOQ)</span>
+              <div class="sim-card-num" id="simEoq">46 Units</div>
+              <span class="sim-card-sub">Optimal batch replenishment size</span>
+            </div>
+
+            <div class="sim-card highlight-warning">
+              <span class="sim-card-label">Calibrated Safety Stock</span>
+              <div class="sim-card-num" id="simSafetyStock">62 Units</div>
+              <span class="sim-card-sub">Buffers demand variance ($Z=1.65$)</span>
+            </div>
+
+            <div class="sim-card highlight-accent">
+              <span class="sim-card-label">Dynamic Reorder Point (ROP)</span>
+              <div class="sim-card-num" id="simRop">275 Units</div>
+              <span class="sim-card-sub">Inventory level triggering replenishment</span>
+            </div>
+          </div>
+
+          <div class="sim-logic-box">
+            <div class="sim-logic-header">
+              <i class="fa-solid fa-microchip text-accent"></i>
+              <strong>Algorithmic Replenishment Policy:</strong>
+            </div>
+            <p id="simNarrative" class="sim-narrative-text">
+              Under a <strong>15-day supplier lead time</strong> and <strong>95% service level</strong>, whenever inventory on hand drops to <strong class="text-accent" id="ropText">275 units</strong>, an automatic production batch of <strong class="text-accent" id="eoqText">46 units</strong> is triggered. This maintains a <strong>62-unit buffer</strong>, eliminating stockouts while recovering <strong class="text-success" id="savingsText">₹2,61,786</strong> annually in avoidable quality loss.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistical Rigor & Formulations Hub -->
+  <section class="section" id="math">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Mathematical Rigor & Methodology</span>
+        <h2 class="section-main-title">Formal Quantitative Formulations</h2>
+        <p class="section-sub-text">Parametric hypothesis testing, time-series differencing, and statistical process control derivations.</p>
+      </div>
+
+      <div class="math-grid-4">
+        <!-- Math Card 1: ANOVA -->
+        <div class="math-panel">
+          <div class="math-panel-top">
+            <h4>One-Way ANOVA &amp; FWER Proof</h4>
+            <span class="math-chip">Hypothesis Testing</span>
+          </div>
+          <div class="math-eq-box">
+            $$F = \frac{\text{MS}_{\text{between}}}{\text{MS}_{\text{within}}} = \frac{\sum_{i=1}^k n_i (\bar{X}_i - \bar{X})^2 / (k-1)}{\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij} - \bar{X}_i)^2 / (N-k)}$$
+          </div>
+          <p class="math-expl"><strong>Empirical Result:</strong> $F = 38.42,\; p = 1.48 \times 10^{-24} \ll 0.001$. Confirms product COPQ differences are statistically non-random.</p>
+          <div class="math-defense">
+            <strong>FWER Defense:</strong> Testing 7 groups pairwise requires $\binom{7}{2} = 21$ t-tests, creating a severe Family-Wise Error Rate:
+            $$\text{FWER} = 1 - (1 - 0.05)^{21} \approx 65.9\%$$
+            ANOVA controls experiment-wise Type I error at $\alpha = 0.05$.
+          </div>
+        </div>
+
+        <!-- Math Card 2: Inventory -->
+        <div class="math-panel">
+          <div class="math-panel-top">
+            <h4>Dynamic Replenishment Model</h4>
+            <span class="math-chip">Supply Chain</span>
+          </div>
+          <div class="math-eq-box">
+            $$\text{EOQ} = \sqrt{\frac{2 D S}{H}}, \quad \text{SS} = Z \cdot \sigma_{\text{daily}} \sqrt{L}, \quad \text{ROP} = (\bar{d} \cdot L) + \text{SS}$$
+          </div>
+          <p class="math-expl"><strong>Parameters:</strong> $S = \text{₹}500/\text{order}$, $H = 20\% \times \text{Unit Cost}$, $Z = 1.65$ (95% Service Level), $L = 15\text{ Days}$.</p>
+          <div class="math-defense">
+            <strong>Buffer Calibration:</strong> High-volume Class C items (Bone Plates/Screws) carry wider safety buffers because annual holding cost (₹24/unit) is negligible compared to hospital client loss.
+          </div>
+        </div>
+
+        <!-- Math Card 3: SPC Limits -->
+        <div class="math-panel">
+          <div class="math-panel-top">
+            <h4>SPC Control Limits ($n=7$)</h4>
+            <span class="math-chip">Quality Control</span>
+          </div>
+          <div class="math-eq-box">
+            $$\text{UCL}_{\bar{X}} = \bar{\bar{X}} + A_2 \bar{R}, \quad \text{LCL}_{\bar{X}} = \bar{\bar{X}} - A_2 \bar{R}, \quad \text{UCL}_R = D_4 \bar{R}$$
+          </div>
+          <p class="math-expl"><strong>Constants for $n=7$:</strong> $A_2 = 0.419, D_3 = 0.076, D_4 = 1.924$. Center line $\bar{\bar{X}} = 15.67$, $\bar{R} = 10.41$.</p>
+          <div class="math-defense">
+            <strong>Drift Identification:</strong> $\text{UCL}_{\bar{X}} = 20.03, \text{LCL}_{\bar{X}} = 11.31$. Early 2026 batches breached UCL, diagnosing systemic machine tool drift.
+          </div>
+        </div>
+
+        <!-- Math Card 4: ARIMA -->
+        <div class="math-panel">
+          <div class="math-panel-top">
+            <h4>ARIMA Time-Series $(p,d,q)$</h4>
+            <span class="math-chip">Demand Forecasting</span>
+          </div>
+          <div class="math-eq-box">
+            $$\left(1 - \sum_{i=1}^p \phi_i B^i\right) (1 - B)^d Y_t = c + \left(1 + \sum_{j=1}^q \theta_j B^j\right) \epsilon_t$$
+          </div>
+          <p class="math-expl"><strong>First-Order Differencing ($d=1$):</strong> Transformed non-stationary upward sales trends ($R^2 > 0.80$) into stationary residuals.</p>
+          <div class="math-defense">
+            <strong>Advantage over Moving Averages:</strong> Moving averages lagged sales growth by 2 months, directly causing stockouts. ARIMA dynamically captures growth velocity.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Primary Data Grid Explorer -->
+  <section class="section bg-alt" id="datagrid">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-head-split">
+          <div>
+            <span class="section-tag">Primary Dataset Explorer</span>
+            <h2 class="section-main-title">119 Batch Records Primary Data Grid</h2>
+            <p class="section-sub-text">Filter, search, and audit 17 months of batch manufacturing data with real-time aggregated metrics.</p>
+          </div>
+          <div class="data-export-buttons">
+            <a href="Medical_Device_Analytics_Workbook.xlsx" class="btn btn-primary" download>
+              <i class="fa-solid fa-file-excel"></i> Download Full Workbook (.xlsx)
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Dynamic Filter Bar -->
+      <div class="grid-filter-bar">
+        <div class="filter-group">
+          <label for="filterProduct">Filter by Product SKU:</label>
+          <select id="filterProduct" class="filter-select" onchange="filterDataGrid()">
+            <option value="ALL">All 7 Products (119 Records)</option>
+            <option value="Bone Plate">Bone Plate</option>
+            <option value="Bone Screw">Bone Screw</option>
+            <option value="Bone Nibbler">Bone Nibbler</option>
+            <option value="Intramedullary Nail">Intramedullary Nail</option>
+            <option value="Needle Holder">Needle Holder</option>
+            <option value="Wire Cutter">Wire Cutter</option>
+            <option value="Plaster Cutting Saw">Plaster Cutting Saw</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterReason">Filter by Rejection Reason:</label>
+          <select id="filterReason" class="filter-select" onchange="filterDataGrid()">
+            <option value="ALL">All 6 Rejection Reasons</option>
+            <option value="Dimension Variation">Dimension Variation</option>
+            <option value="Burr Formation">Burr Formation</option>
+            <option value="Surface Finish">Surface Finish</option>
+            <option value="Thread Defect">Thread Defect</option>
+            <option value="Material Defect">Material Defect</option>
+            <option value="Packaging Damage">Packaging Damage</option>
+          </select>
+        </div>
+
+        <div class="filter-summary-chips">
+          <div class="chip">Rows: <strong id="chipRowCount">119</strong></div>
+          <div class="chip">Avg Defect: <strong id="chipAvgDefect">1.22%</strong></div>
+          <div class="chip">Total COPQ: <strong id="chipTotalCopq" class="text-danger">₹12,02,530</strong></div>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="datagrid-card">
+        <div class="table-responsive">
+          <table class="primary-table" id="primaryDataTable">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Product SKU</th>
+                <th>Units Produced</th>
+                <th>Units Rejected</th>
+                <th>Defect Rate (%)</th>
+                <th>Rejection Reason</th>
+                <th>Unit Cost (₹)</th>
+                <th>Rework Cost (₹)</th>
+                <th>Scrap Cost (₹)</th>
+                <th>Total COPQ (₹)</th>
+                <th>Closing Stock</th>
+                <th>Stockout?</th>
+              </tr>
+            </thead>
+            <tbody id="dataTableBody">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Complete Python Pipeline & Jupyter Notebook Code Section -->
+  <section class="section" id="code">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-head-split">
+          <div>
+            <span class="section-tag">Script & Notebook Repository</span>
+            <h2 class="section-main-title">End-to-End Python Pipeline & Colab Notebook</h2>
+            <p class="section-sub-text">Switch between the production-grade script (482 lines) and the interactive Jupyter notebook used for verification.</p>
+          </div>
+          <div class="code-actions">
+            <button class="btn btn-secondary" onclick="copyCurrentCode()"><i class="fa-regular fa-copy"></i> Copy Active File</button>
+            <a href="medical_device_analysis_pipeline.py" id="downloadActiveBtn" class="btn btn-primary" download><i class="fa-solid fa-download"></i> Download Script</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code File Tabs -->
+      <div class="code-file-tabs">
+        <button class="code-tab-btn active" onclick="switchCodeTab('py-script')">
+          <i class="fa-brands fa-python text-accent"></i> medical_device_analysis_pipeline.py (Production Script)
+        </button>
+        <button class="code-tab-btn" onclick="switchCodeTab('ipynb-notebook')">
+          <i class="fa-solid fa-book-bookmark text-warning"></i> medical_device_charts_notebook.ipynb (Jupyter Notebook)
+        </button>
+      </div>
+
+      <div class="code-viewer-panel">
+        <div class="code-viewer-top">
+          <div class="code-window-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="code-title" id="activeCodeTitle"><i class="fa-brands fa-python text-accent"></i> medical_device_analysis_pipeline.py</div>
+          <span class="code-meta-badge" id="activeCodeMeta">Python 3.10+ • 482 Lines • Complete Statistical Pipeline</span>
+        </div>
+
+        <div class="code-scroll-box">
+          <pre><code id="activeCodeSnippet">"""
+Medical Equipment Firm — Surgical Implants Quality & Inventory Optimization
+Chart Generation and Statistical Analysis Script
+
+Author: Kushal Batra (IIT Madras BS in Data Science & Applications)
+Purpose: Reproduces all 10 figures and statistical test results (T-test,
+ANOVA, correlation, ARIMA forecast, SPC control limits).
+Reads directly from primary-data Excel file.
+
+Permitted Libraries: pandas, numpy, matplotlib, scipy, statsmodels
+"""
+
+import os
+import warnings
+import numpy as np
+import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
+from scipy import stats
+from statsmodels.tsa.arima.model import ARIMA
+
+warnings.filterwarnings("ignore")
+
+# ----------------------------------------------------------------------
+# 1. LOAD AND CLEAN PRIMARY DATASET
+# ----------------------------------------------------------------------
+RAW_DATA_PATH = "Raw_Data_Medical_Equipment_Firm.xlsx"
+df = pd.read_excel(RAW_DATA_PATH)
+df["Months_date"] = pd.to_datetime(df["Months_date"])
+
+# Derived Operational Variables
+df["Defect_Rate"] = (df["Units_Rejected"] / df["Units_Produced"]) * 100
+df["COPQ"] = df["Rework_Cost_INR"] + df["Scrap_Cost_INR"]
+
+# Automated Quality Assertions
+assert df.isnull().sum().drop(labels=["Stockout_Incident"], errors="ignore").sum() == 0, "Missing values detected"
+assert (df["Units_Rejected"] <= df["Units_Produced"]).all(), "Units_Rejected exceeds Units_Produced"
+
+# ----------------------------------------------------------------------
+# 2. PILLAR 1 — DEFECT TREND & SPC CONTROL CHARTS
+# ----------------------------------------------------------------------
+monthly_defect = df.groupby("Months_date").apply(
+    lambda g: g["Units_Rejected"].sum() / g["Units_Produced"].sum() * 100
+)
+x = np.arange(len(monthly_defect))
+slope, intercept, r_val, p_val, std_err = stats.linregress(x, monthly_defect.values)
+print(f"Defect Trend Slope: {slope:.5f}%/month (p-value: {p_val:.4e})")
+
+# SPC Constants for Subgroup n=7
+A2, D3, D4 = 0.419, 0.076, 1.924
+spc_monthly = df.groupby("Months_date")["Units_Rejected"].agg(["mean", "max", "min"])
+spc_monthly["range"] = spc_monthly["max"] - spc_monthly["min"]
+
+xbar_grand = spc_monthly["mean"].mean()
+rbar = spc_monthly["range"].mean()
+
+UCL_x = xbar_grand + A2 * rbar
+LCL_x = max(0, xbar_grand - A2 * rbar)
+UCL_r = D4 * rbar
+LCL_r = D3 * rbar
+
+# ----------------------------------------------------------------------
+# 3. PILLAR 2 — COPQ MODELING & ONE-WAY ANOVA
+# ----------------------------------------------------------------------
+# One-Way ANOVA across 7 Product Lines
+groups_copq = [df[df["Product"] == p]["COPQ"].values for p in df["Product"].unique()]
+f_stat_copq, p_val_copq = stats.f_oneway(*groups_copq)
+print(f"ANOVA COPQ Test: F = {f_stat_copq:.2f}, p = {p_val_copq:.5e}")
+
+# Pearson Correlation: COPQ vs Unit Cost vs Defect Rate
+r_cost, p_cost = stats.pearsonr(df["Unit_Cost_INR"], df["COPQ"])
+r_defect, p_defect = stats.pearsonr(df["Defect_Rate"], df["COPQ"])
+print(f"COPQ vs Unit Cost: r = {r_cost:.3f} (p = {p_cost:.5e})")
+print(f"COPQ vs Defect Rate: r = {r_defect:.3f} (p = {p_defect:.5e})")
+
+# ----------------------------------------------------------------------
+# 4. PILLAR 3 — ABC CLASSIFICATION, EOQ, ROP & ARIMA FORECASTING
+# ----------------------------------------------------------------------
+prod_sales = df.groupby("Product").agg(
+    AvgMonthlySales=("Sales_Qty", "mean"), UnitCost=("Unit_Cost_INR", "first")
+)
+prod_sales["AnnualDemand"] = prod_sales["AvgMonthlySales"] * 12
+prod_sales["AnnualValue"] = prod_sales["AnnualDemand"] * prod_sales["UnitCost"]
+
+# EOQ and Safety Stock Calculations (Z = 1.65 for 95% Service Level, L = 15 Days)
+S = 500
+H_RATE = 0.20
+Z = 1.65
+LEAD_TIME_DAYS = 15
+
+prod_sales["H"] = prod_sales["UnitCost"] * H_RATE
+prod_sales["EOQ"] = np.sqrt((2 * prod_sales["AnnualDemand"] * S) / prod_sales["H"])
+daily_demand = prod_sales["AnnualDemand"] / 365
+monthly_std = df.groupby("Product")["Sales_Qty"].std()
+daily_std = monthly_std / np.sqrt(30)
+prod_sales["SafetyStock"] = Z * daily_std.reindex(prod_sales.index) * np.sqrt(LEAD_TIME_DAYS)
+prod_sales["ROP"] = (daily_demand * LEAD_TIME_DAYS) + prod_sales["SafetyStock"]
+
+# ARIMA(2,1,0) Sales Forecast
+for product in ["Bone Plate", "Bone Screw"]:
+    sub = df[df["Product"] == product].sort_values("Months_date")
+    series = pd.Series(sub["Sales_Qty"].values, index=pd.DatetimeIndex(sub["Months_date"].values, freq="MS"))
+    fit = ARIMA(series, order=(2, 1, 0)).fit()
+    forecast = fit.get_forecast(steps=3)
+    print(f"ARIMA 3-Month Forecast for {product}: {forecast.predicted_mean.round(0).values}")
+</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Strategic Recommendations & Business ROI -->
+  <section class="section bg-alt" id="roi">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Strategic Impact</span>
+        <h2 class="section-main-title">Business Recommendations & Quantified ROI</h2>
+        <p class="section-sub-text">Translating mathematical findings into prioritized industrial interventions.</p>
+      </div>
+
+      <div class="roi-cards-3">
+        <div class="roi-card">
+          <div class="roi-num-tag">01</div>
+          <div class="roi-icon-box"><i class="fa-solid fa-wrench"></i></div>
+          <h3>Pre-Shift Digital Calibration</h3>
+          <p>Implement standardized daily torque and tool-offset calibration checklists on CNC milling stations before morning and night shifts to halt progressive defect drift.</p>
+          <div class="roi-bottom-metric">
+            <span class="roi-b-num">35% Defect Drop</span>
+            <span class="roi-b-label">From 1.63% to &lt;1.00%</span>
+          </div>
+        </div>
+
+        <div class="roi-card highlight">
+          <div class="roi-num-tag">02</div>
+          <div class="roi-icon-box highlight"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3>Dedicated High-Value QC Gates</h3>
+          <p>Triage quality control by financial risk rather than unit volume. Deploy multi-stage inspection checkpoints specifically on Plaster Cutting Saw and Wire Cutter lines.</p>
+          <div class="roi-bottom-metric highlight">
+            <span class="roi-b-num">₹5.50+ Lakhs</span>
+            <span class="roi-b-label">Annual recoverable scrap/rework</span>
+          </div>
+        </div>
+
+        <div class="roi-card">
+          <div class="roi-num-tag">03</div>
+          <div class="roi-icon-box"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <h3>EOQ + ARIMA Replenishment</h3>
+          <p>Transition from experience-based replenishment to parameterized dynamic ROP buffers linked with 3-month forward ARIMA demand projections.</p>
+          <div class="roi-bottom-metric">
+            <span class="roi-b-num">0 Stockout Target</span>
+            <span class="roi-b-label">95% Service Level ($Z=1.65$)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-layout">
+      <div class="footer-left">
+        <div class="footer-brand-title">Kushal Batra</div>
+        <div class="footer-brand-sub">IIT Madras BS in Data Science and Applications • Roll: 24f2000859</div>
+        <div class="footer-privacy-text">
+          <i class="fa-solid fa-lock"></i> All enterprise names, personal identifiers, and addresses are anonymized to uphold strict corporate confidentiality.
+        </div>
+      </div>
+      <div class="footer-right">
+        <a href="mailto:24f2000859@ds.study.iitm.ac.in" class="footer-social-link"><i class="fa-solid fa-envelope"></i> 24f2000859@ds.study.iitm.ac.in</a>
+        <a href="https://www.linkedin.com/in/kushal-batra-615a793a2/" target="_blank" class="footer-social-link"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+        <a href="https://github.com/iitmkushal2506/iitm_BDM_capstone_project" target="_blank" class="footer-social-link"><i class="fa-brands fa-github"></i> GitHub Repository</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       FLOATING CONTROLS
+       1. Bottom-Left: Music Player Widget
+       2. Bottom-Right: AI Project Assistant Launcher & Modal Window
+       3. Bottom-Right: Scroll-to-Top Button
+       ========================================================================== -->
+  
+  <!-- Floating Music Player Widget (Bottom-Left) -->
+  <div class="music-widget-wrapper" id="musicWidgetWrapper">
+    <!-- Collapsed Icon Trigger -->
+    <button class="music-toggle-btn" id="musicToggleBtn" onclick="toggleMusicWidget()" title="Open Music Player">
+      <i class="fa-solid fa-music"></i>
+      <span class="music-pulse-ring"></span>
+    </button>
+
+    <!-- Expanded Player Card (Sleek, Compact, No Time Bar) -->
+    <div class="music-player-card" id="musicPlayerCard">
+      <div class="player-header">
+        <div class="player-header-left">
+          <span class="now-playing-tag"><i class="fa-solid fa-compact-disc fa-spin"></i> NOW PLAYING</span>
+          <div class="track-title" id="currentTrackTitle">Don't Worry</div>
+          <div class="track-artist" id="currentTrackArtist">Audio Track • Background Score</div>
+        </div>
+        <button class="player-close-btn" onclick="toggleMusicWidget()" title="Minimize Player"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Next Track Indicator -->
+      <div class="next-track-pill">
+        <span class="next-label">UP NEXT:</span>
+        <span class="next-title" id="nextTrackTitle">Itz A Hustle</span>
+      </div>
+
+      <!-- Player Controls -->
+      <div class="player-controls-row">
+        <button class="player-ctrl-btn" onclick="prevSong()" title="Previous Track"><i class="fa-solid fa-backward-step"></i></button>
+        <button class="player-play-btn" id="playPauseBtn" onclick="togglePlayPause()" title="Play / Pause">
+          <i class="fa-solid fa-play" id="playIcon"></i>
+        </button>
+        <button class="player-ctrl-btn" onclick="nextSong()" title="Next Track"><i class="fa-solid fa-forward-step"></i></button>
+        
+        <!-- Volume Control -->
+        <div class="volume-slider-box">
+          <i class="fa-solid fa-volume-high volume-icon" id="volumeIcon" onclick="toggleMute()" title="Mute / Unmute"></i>
+          <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.75" oninput="setVolume(this.value)" class="volume-range" title="Volume Slider" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Right-Side Controls Group -->
+  <div class="floating-right-group">
+    <!-- Scroll-to-Top Button -->
+    <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()" title="Scroll directly to top">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Floating AI Project Chatbot Launcher -->
+    <button class="ai-chat-launcher" id="aiChatLauncher" onclick="toggleChatbot()" title="Ask Project AI Assistant">
+      <div class="ai-launcher-icon">
+        <i class="fa-solid fa-robot"></i>
+        <span class="ai-online-dot"></span>
+      </div>
+      <span class="ai-launcher-text">Ask Project AI</span>
+    </button>
+  </div>
+
+  <!-- AI Chatbot Interactive Modal Window -->
+  <div class="chatbot-window" id="chatbotWindow">
+    <div class="chatbot-header">
+      <div class="chatbot-header-info">
+        <div class="chatbot-avatar"><i class="fa-solid fa-brain"></i></div>
+        <div>
+          <div class="chatbot-title">Industrial Analytics AI Advisor</div>
+          <div class="chatbot-subtitle">Trained on 17-Month Factory Audit &amp; Statistical Models</div>
+        </div>
+      </div>
+      <div class="chatbot-header-actions">
+        <button class="chatbot-action-btn" onclick="resetChat()" title="Reset / Clear Chat"><i class="fa-solid fa-rotate-left"></i></button>
+        <button class="chatbot-action-btn" onclick="toggleChatbot()" title="Close Assistant"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+
+    <!-- Quick Question Suggestions -->
+    <div class="chatbot-prompts-bar">
+      <div class="chatbot-prompts-label"><i class="fa-solid fa-bolt text-warning"></i> SUGGESTED QUESTIONS:</div>
+      <div class="chatbot-chips-scroll">
+        <button class="chat-chip" onclick="askQuickPrompt('Why did Plaster Saw drive 62.2% of total COPQ despite low defect rate?')">💡 COPQ Paradox</button>
+        <button class="chat-chip" onclick="askQuickPrompt('Explain the One-Way ANOVA F-test and the Family-Wise Error Rate proof.')">📊 ANOVA &amp; FWER</button>
+        <button class="chat-chip" onclick="askQuickPrompt('Why did 3-month Moving Averages fail compared to ARIMA(2,1,0)?')">📈 ARIMA vs Moving Avg</button>
+        <button class="chat-chip" onclick="askQuickPrompt('How are EOQ, Safety Stock, and ROP calibrated for Bone Plates vs Screws?')">📦 EOQ &amp; ROP Policy</button>
+        <button class="chat-chip" onclick="askQuickPrompt('How did 4M Ishikawa and 5-Whys diagnose machine tool drift?')">🔧 4M Root Cause</button>
+        <button class="chat-chip" onclick="askQuickPrompt('What are the SPC Control Limits (X-bar and R) and how was drift caught?')">📉 SPC Control Limits</button>
+        <button class="chat-chip" onclick="askQuickPrompt('What is the projected annual cost savings and business ROI?')">💰 Business ROI</button>
+        <button class="chat-chip" onclick="askQuickPrompt('Tell me about Kushal Batra, his IIT Madras credentials, and how to contact him.')">👨‍🎓 Candidate Profile</button>
+        <button class="chat-chip" onclick="askQuickPrompt('How was primary data collected and how is firm privacy maintained?')">🔒 Data &amp; Privacy</button>
+      </div>
+    </div>
+
+    <!-- Message History Area -->
+    <div class="chatbot-messages" id="chatbotMessages">
+      <div class="chat-msg bot-msg">
+        <div class="chat-avatar bot-avatar"><i class="fa-solid fa-robot"></i></div>
+        <div class="chat-bubble">
+          <p>Hello! I am the <strong>Industrial Analytics AI Advisor</strong> for Kushal Batra's IIT Madras BDM Capstone Project on <em>Surgical Implants Quality &amp; Inventory Optimization</em>.</p>
+          <p>I can instantly explain any aspect of the <strong>17-month factory audit</strong>, <strong>ANOVA COPQ econometrics</strong>, <strong>$\bar{X}-R$ control limits</strong>, <strong>ARIMA forecasting</strong>, or <strong>dynamic EOQ–ROP inventory models</strong>.</p>
+          <p>Click any suggestion chip above or type your question below!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Input Area -->
+    <form class="chatbot-input-form" onsubmit="handleChatSubmit(event)">
+      <input type="text" id="chatInput" class="chatbot-input" placeholder="Ask about COPQ, ANOVA, ARIMA, inventory, ROI..." autocomplete="off" />
+      <button type="submit" id="chatSendBtn" class="chatbot-send-btn" title="Send Question"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </div>
+
+  <!-- Hidden HTML5 Audio Element -->
+  <audio id="bgAudioPlayer" preload="auto"></audio>
+
+  <script src="app.js"></script>
+</body>
+</html>

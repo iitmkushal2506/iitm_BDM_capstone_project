@@ -1,0 +1,25 @@
+# ==============================================================================
+# Git Ignore Configuration
+# Ignore all root files/directories EXCEPT Project_recruit_portfolio & README.md
+# ==============================================================================
+
+/*
+!/.gitignore
+!/README.md
+!/Project_recruit_portfolio/
+
+# Python & Temporary Files inside Project_recruit_portfolio
+Project_recruit_portfolio/__pycache__/
+Project_recruit_portfolio/*.py[cod]
+Project_recruit_portfolio/*.mp4
+
+# OS Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.log
