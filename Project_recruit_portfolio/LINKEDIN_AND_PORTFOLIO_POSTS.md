@@ -40,7 +40,8 @@ Data science isn't just about training algorithms—it's about understanding bus
 
 Grateful to the plant operations leadership for their mentorship and collaboration, and the faculty mentors at the IIT Madras BS Program.
 
-📂 GitHub repo & complete analysis: [Insert GitHub Link]
+🌐 Live Interactive Dashboard: https://iitm-bdm-capstone-project.onrender.com/
+📂 GitHub repo & complete analysis: https://github.com/iitmkushal2506/iitm_BDM_capstone_project
 
 #DataScience #OperationsResearch #SupplyChainAnalytics #IITMadras #MachineLearning #Python #BusinessAnalytics #QualityEngineering #ManufacturingAnalytics #SixSigma
 
@@ -58,7 +59,7 @@ Grateful to the plant operations leadership for their mentorship and collaborati
 `Jan 2026 – Jul 2026`
 
 **Project URL:** 
-`[Link to your GitHub Repository]`
+`https://iitm-bdm-capstone-project.onrender.com/` (or `https://github.com/iitmkushal2506/iitm_BDM_capstone_project`)
 
 **Description:**
 ```

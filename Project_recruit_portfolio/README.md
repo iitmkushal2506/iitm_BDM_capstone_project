@@ -1,10 +1,13 @@
 # Medical Equipment Firm — Surgical Implants Quality & Inventory Cost Optimization
 
+[![Live Web Showcase](https://img.shields.io/badge/Live%20Showcase-Render.com-00C7B7?style=for-the-badge&logo=render&logoColor=white)](https://iitm-bdm-capstone-project.onrender.com/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Online%20Dashboard-brightgreen.svg)](https://iitm-bdm-capstone-project.onrender.com/)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Statistical Analysis](https://img.shields.io/badge/Stats-ANOVA%20%7C%20ARIMA%20%7C%20SPC-success.svg)](#statistical-analysis--methodology)
 [![Domain](https://img.shields.io/badge/Domain-Manufacturing%20%26%20Supply%20Chain-orange.svg)](#business-context)
 [![Data](https://img.shields.io/badge/Dataset-Primary%20Field%20Data%20(17%20Months)-purple.svg)](#dataset-architecture)
 
+> 🚀 **Live Interactive Web Showcase**: [https://iitm-bdm-capstone-project.onrender.com/](https://iitm-bdm-capstone-project.onrender.com/)  
 > **End-to-End Primary Data Science & Industrial Operations Analysis** evaluating manufacturing non-conformance, quantifying Cost of Poor Quality (COPQ), and engineering dynamic inventory replenishment models for an ISO/CE-certified orthopedic implant & medical equipment manufacturer.
 
 ---
@@ -139,6 +142,11 @@ Primary data was collected via direct observational logging, physical registers,
 └── Data Engineering & Modeling: Microsoft Excel (Data Validation, Multi-tab Modeling)
 ```
 
+### 🌐 Live Showcase & Cloud Deployment
+
+- **Live Interactive Web Showcase (Render)**: [https://iitm-bdm-capstone-project.onrender.com/](https://iitm-bdm-capstone-project.onrender.com/)
+- Features: Real-time KPI monitors, dynamic Chart.js visualizations, interactive EOQ & Reorder Point simulator, downloadable primary dataset and Python scripts.
+
 ### Reproducing Visualizations & Statistical Tests
 
 ```bash
@@ -146,10 +154,13 @@ Primary data was collected via direct observational logging, physical registers,
 git clone https://github.com/iitmkushal2506/iitm_BDM_capstone_project.git
 cd iitm_BDM_capstone_project/Project_recruit_portfolio
 
-# 2. Run Python analysis pipeline
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Run Python analysis pipeline
 python medical_device_analysis_pipeline.py
 
-# 3. Launch live local recruiter portfolio showcase
+# 4. Launch live local recruiter portfolio showcase
 python -m http.server 8080
 ```
 

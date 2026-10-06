@@ -15,13 +15,10 @@ We have built a complete, interactive, mobile-responsive web dashboard inside yo
   - 💻 Code Viewer with clean syntax highlighting
   - 🔒 Anonymized for full company data privacy
 
-### How to host it for FREE in 2 minutes (GitHub Pages):
-1. Push your project files to a public GitHub repository named `medical-equipment-quality-inventory-analysis`.
-2. Go to **Settings $\rightarrow$ Pages** in your GitHub repository.
-3. Select `Branch: main` and `/web_showcase` (or root) folder $\rightarrow$ Click **Save**.
-4. GitHub will give you a live URL like:  
-   `https://kushalbatra.github.io/medical-equipment-quality-inventory-analysis/`
-5. **Put this link at the top of your Resume and LinkedIn profile!**
+### Live Cloud Deployment:
+- **Live URL**: [https://iitm-bdm-capstone-project.onrender.com/](https://iitm-bdm-capstone-project.onrender.com/)
+- **Hosting Platform**: Render.com (Static Site with automated GitHub CI/CD)
+- **Put this link at the top of your Resume and LinkedIn profile!**
 
 ---
 
@@ -72,7 +69,7 @@ Recruiters don't have time to read 20-page academic PDFs. Instead, follow this 3
 
 | Channel / Medium | Exact Link / Text to Add |
 | :--- | :--- |
-| **Resume Header** | `GitHub: github.com/kushalbatra • Portfolio: kushalbatra.github.io/medical-equipment-analysis` |
-| **Resume Experience Section** | Use the Google XYZ bullets from [`RESUME_AND_INTERVIEW_GUIDE.md`](file:///c:/Users/kusha/Desktop/ANTIGRAVITY/BDM_JUN26/RESUME_AND_INTERVIEW_GUIDE.md) |
-| **LinkedIn "Featured" Section** | Add your live Web Showcase link with the headline from [`LINKEDIN_AND_PORTFOLIO_POSTS.md`](file:///c:/Users/kusha/Desktop/ANTIGRAVITY/BDM_JUN26/LINKEDIN_AND_PORTFOLIO_POSTS.md) |
-| **Cold Outreach / InMail to Recruiters** | *"I recently completed an industrial data case study optimizing quality & inventory for a medical equipment manufacturer using ANOVA & ARIMA. You can interact with the live dashboard here: [Your Link]"* |
+| **Resume Header** | `GitHub: github.com/iitmkushal2506/iitm_BDM_capstone_project • Portfolio: https://iitm-bdm-capstone-project.onrender.com/` |
+| **Resume Experience Section** | Use the Google XYZ bullets from [`RESUME_AND_INTERVIEW_GUIDE.md`](file:///c:/Users/kusha/Desktop/ANTIGRAVITY/BDM_JUN26/Project_recruit_portfolio/RESUME_AND_INTERVIEW_GUIDE.md) |
+| **LinkedIn "Featured" Section** | Add your live Web Showcase link (`https://iitm-bdm-capstone-project.onrender.com/`) with the headline from [`LINKEDIN_AND_PORTFOLIO_POSTS.md`](file:///c:/Users/kusha/Desktop/ANTIGRAVITY/BDM_JUN26/Project_recruit_portfolio/LINKEDIN_AND_PORTFOLIO_POSTS.md) |
+| **Cold Outreach / InMail to Recruiters** | *"I recently completed an industrial data case study optimizing quality & inventory for a medical equipment manufacturer using ANOVA & ARIMA. You can interact with the live dashboard here: https://iitm-bdm-capstone-project.onrender.com/"* |
