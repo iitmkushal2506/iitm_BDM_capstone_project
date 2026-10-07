@@ -808,9 +808,163 @@ function appendChatMessage(content, sender, isHtml = false) {
 // Knowledge Engine & Natural Language Query Processor
 // --------------------------------------------------------------------------
 function generateBotResponse(query) {
-  const q = query.toLowerCase();
+  const q = query.toLowerCase().trim();
 
-  // 1. COPQ Paradox & Plaster Saw Analysis
+  // Normalize common terms and typos (e.g., wht/wat -> what, rudrubic(s) -> rubrics, etc.)
+  const norm = q
+    .replace(/\bwht\b/g, 'what')
+    .replace(/\bwat\b/g, 'what')
+    .replace(/\bhw\b/g, 'how')
+    .replace(/\brudrubics\b/g, 'rubrics')
+    .replace(/\brudrubic\b/g, 'rubric')
+    .replace(/\brubrix\b/g, 'rubrics');
+
+  const asksAbout = norm.includes('about') || norm.includes('overview') || norm.includes('context') || norm.includes('background') || norm.includes('scope') || norm.includes('what is the project') || norm.includes('what was the project');
+  const asksDidWeDo = norm.includes('what did we do') || norm.includes('what we did') || norm.includes('what did you do') || norm.includes('what was done') || norm.includes('methodology') || norm.includes('execution') || norm.includes('steps') || norm.includes('deliverables');
+  const asksRubrics = norm.includes('rubric') || norm.includes('rubrics') || norm.includes('competency') || norm.includes('evaluation') || norm.includes('criteria') || norm.includes('iitm rubric');
+  const asksEverything = norm.includes('everything') || (asksAbout && (asksDidWeDo || asksRubrics));
+
+  // 0. COMBINED MASTER BRIEFING (If user asks both or asks for everything about the project)
+  if (asksEverything || (norm.includes('project') && norm.includes('rubric') && (norm.includes('did') || norm.includes('everything')))) {
+    return `
+      <p><strong>🎯 MASTER BRIEFING: Industrial Context, Technical Execution &amp; Capstone Rubrics</strong></p>
+      
+      <p><strong>1️⃣ What Was the Project About? (Context &amp; Industrial Scope)</strong></p>
+      <p>This capstone project is an <strong>end-to-end industrial data engineering and operations research audit</strong> conducted over a <strong>17-month observation timeline (January 2025 – May 2026)</strong> for an established <strong>ISO/CE-certified medical equipment and orthopedic implants manufacturing firm</strong> based in the Delhi-NCR industrial cluster.</p>
+      <p>The firm manufactures <strong>7 core orthopedic SKUs</strong>: Bone Plates (₹450), Bone Screws (₹120), Plaster Cutting Saws (₹18,500), Bone Nibblers (₹2,500), Wire Cutters (₹3,000), Intramedullary Nails (₹950), and Needle Holders (₹400).</p>
+      <p><strong>The Plant's 3 Coupled Crises:</strong></p>
+      <ul>
+        <li><strong>Escalating Defect Rate:</strong> Rejections drifted from 1.00% to 1.63% across 6 systemic failure modes.</li>
+        <li><strong>₹12.02 Lakhs COPQ Bleed:</strong> Hidden financial losses in unrecovered scrap (₹4.29L) and rework (₹7.74L), wasting 746 production labor hours.</li>
+        <li><strong>Hospital Stockout Crises:</strong> Static 3-month moving averages lagged 17-month sales growth by ~60 days, triggering stockouts in high-demand fracture fixation SKUs.</li>
+      </ul>
+      <p><strong>Data Foundation:</strong> Audited across <strong>119 primary batch records</strong> ($17\\text{ months} \\times 7\\text{ SKUs}$) with zero synthetic imputation and 100% genuine mathematical variance (NDA compliant).</p>
+
+      <hr style="border:0;border-top:1px solid var(--border-color);margin:12px 0;" />
+
+      <p><strong>2️⃣ What Did We Do? (3-Pillar Engineering &amp; Statistical Framework)</strong></p>
+      <ul>
+        <li><strong>Pillar 1 — 4M Diagnostics &amp; SPC Control:</strong> Used Ishikawa Fishbone &amp; 5-Whys to trace defect drift to CNC collet runout ($>0.015\\text{mm}$) and dry-run thermal expansion. Built $\\bar{X}-R$ control charts ($n=7, A_2=0.419, D_4=1.924, \\text{UCL}_{\\bar{X}}=20.03$) to catch process drift before batch scrap.</li>
+        <li><strong>Pillar 2 — COPQ Paradox &amp; One-Way ANOVA:</strong> Disproved the assumption that high-defect items cost the most. Discovered that <strong>Plaster Cutting Saw</strong> (0.92% defect rate) drove <strong>62.2% (₹7.48 Lakhs)</strong> of total COPQ due to its ₹18,500 unit cost. Confirmed statistical significance with One-Way ANOVA ($F=38.42, p=1.48 \\times 10^{-24} \\ll 0.001$) and proved pairwise t-tests inflate Family-Wise Error Rate to $\\text{FWER} \\approx 65.9\\%$.</li>
+        <li><strong>Pillar 3 — ARIMA Demand Forecasting &amp; Dynamic Inventory:</strong> Proved moving averages lagged demand by 60 days. Built ARIMA(2,1,0) with first-order differencing ($d=1, R^2 > 0.80$). Calibrated dynamic multi-echelon replenishment: $\\text{EOQ} = \\sqrt{2DS/H}$, Safety Stock $\\text{SS} = Z \\cdot \\sigma_{\\text{daily}} \\sqrt{L}$ ($Z=1.65$, 95% service level), and $\\text{ROP} = (\\bar{d} \\cdot L) + \\text{SS}$.</li>
+      </ul>
+
+      <hr style="border:0;border-top:1px solid var(--border-color);margin:12px 0;" />
+
+      <p><strong>3️⃣ IIT Madras BDM Capstone Rubrics Evaluation Matrix:</strong></p>
+      <ul>
+        <li><strong>1. Problem Definition (Exemplary):</strong> Real industrial engagement resolving balance-sheet COPQ losses and hospital supply chain stockouts.</li>
+        <li><strong>2. Primary Data Gathering (Exemplary):</strong> 119 physical logbook records across 17 months, 15 variables, with zero synthetic data.</li>
+        <li><strong>3. Diagnostic &amp; Exploratory Analysis (Exemplary):</strong> 4M Fishbone, 5-Whys, Pareto uniformity proof, and Pearson correlation matrices ($r=0.697$).</li>
+        <li><strong>4. Statistical Rigor (Exemplary):</strong> One-Way ANOVA, FWER mathematical proof, SPC $3\\sigma$ control limits, and ARIMA time-series stationarity.</li>
+        <li><strong>5. Prescriptive Optimization (Exemplary):</strong> Dynamic ABC–EOQ–ROP multi-echelon stochastic inventory model.</li>
+        <li><strong>6. Quantified Business ROI (Exemplary):</strong> ₹5.10 Lakhs annual COPQ recovery, zero hospital stockouts, 18.4% holding cost reduction, 3.2-month payback.</li>
+        <li><strong>7. Deliverables &amp; Production Code (Exemplary):</strong> 482-line Python script, Colab notebook, live Excel workbook, and interactive portfolio web application.</li>
+      </ul>
+    `;
+  }
+
+  // 1. WHAT WAS THE PROJECT ABOUT? (Comprehensive Overview & Context)
+  if (
+    norm.includes('what was the project about') ||
+    norm.includes('what is the project about') ||
+    norm.includes('what was this project about') ||
+    norm.includes('what is this project about') ||
+    norm.includes('about this project') ||
+    norm.includes('about the project') ||
+    norm.includes('project overview') ||
+    norm.includes('project summary') ||
+    norm.includes('tell me about the project') ||
+    norm.includes('explain the project') ||
+    norm.includes('project background') ||
+    norm.includes('project scope') ||
+    norm.includes('industrial context') ||
+    norm.includes('context') ||
+    norm.includes('scope') ||
+    norm.includes('background')
+  ) {
+    return `
+      <p><strong>🎯 Executive Project Overview &amp; Industrial Context:</strong></p>
+      <p>This capstone project is an <strong>end-to-end industrial data engineering and operations research audit</strong> conducted over a <strong>17-month observation timeline (January 2025 – May 2026)</strong> for an established <strong>ISO/CE-certified medical equipment and orthopedic implants manufacturing firm</strong> based in the Delhi-NCR industrial cluster.</p>
+      
+      <p><strong>🏥 Scope &amp; Product Portfolio (7 Core Orthopedic SKUs):</strong></p>
+      <p>The firm produces high-precision surgical instruments and trauma fixation implants:</p>
+      <ul>
+        <li><strong>Bone Plate (₹450):</strong> High-volume internal fracture fixation plates.</li>
+        <li><strong>Bone Screw (₹120):</strong> High-volume trauma compression screws.</li>
+        <li><strong>Plaster Cutting Saw (₹18,500):</strong> High-value precision electromechanical cast removal device.</li>
+        <li><strong>Bone Nibbler (₹2,500):</strong> Precision rongeur tool for bone contouring.</li>
+        <li><strong>Wire Cutter (₹3,000):</strong> High-tensile surgical wire cutting instrument.</li>
+        <li><strong>Intramedullary Nail (₹950):</strong> Long-bone shaft orthopedic fixation nail.</li>
+        <li><strong>Needle Holder (₹400):</strong> Tungsten carbide surgical suturing tool.</li>
+      </ul>
+
+      <p><strong>⚠️ The Three Interconnected Factory Floor Crises Addressed:</strong></p>
+      <ol>
+        <li><strong>Rising Quality Non-Conformance:</strong> Overall defect rate escalated from <strong>1.00% to 1.63%</strong> across 6 systemic failure modes (Surface Finish, Burr/Edge, Thread Fit, Dimensional Tolerance, Material Passivation, Packaging).</li>
+        <li><strong>The Hidden ₹12.02 Lakhs Financial Bleed (COPQ):</strong> Severe financial loss of <strong>₹12,02,530</strong> in unrecovered scrap (₹4.29L) and rework (₹7.74L), with <strong>746 production labor hours</strong> wasted on corrective repair.</li>
+        <li><strong>Supply Chain Stockout Bottlenecks:</strong> Hospital orders for fast-moving implants suffered chronic stockout incidents because the plant relied on static 3-month moving averages that lagged surging sales growth by ~60 days.</li>
+      </ol>
+
+      <p><strong>🔬 Dataset Foundation &amp; Confidentiality:</strong></p>
+      <p>The investigation is grounded in <strong>119 primary batch records</strong> ($17\\text{ months} \\times 7\\text{ SKUs}$) audited directly from physical production logbooks, QA inspection sheets, and warehouse registers. All corporate identities are strictly anonymized per NDA compliance while preserving 100% mathematical variance.</p>
+    `;
+  }
+
+  // 2. WHAT DID WE DO & RUBRICS FULFILLMENT (Detailed Step-by-Step & Academic Matrix)
+  if (
+    asksDidWeDo ||
+    asksRubrics ||
+    norm.includes('what did we do') ||
+    norm.includes('what we did') ||
+    norm.includes('rubric') ||
+    norm.includes('rubrics') ||
+    norm.includes('methodology') ||
+    norm.includes('how did we do') ||
+    norm.includes('deliverables') ||
+    norm.includes('steps') ||
+    norm.includes('competency') ||
+    norm.includes('what was done')
+  ) {
+    return `
+      <p><strong>📋 Complete Execution Breakdown &amp; Capstone Rubrics Matrix:</strong></p>
+      <p>We engineered a structured, three-pillar diagnostic and optimization framework bridging shop-floor physics with mathematical rigor, satisfying all <strong>IIT Madras BDM Capstone Rubrics at the Exemplary level</strong>:</p>
+
+      <p><strong>⚙️ Pillar 1 — Quality Engineering &amp; 4M Diagnostic Root Cause:</strong></p>
+      <ul>
+        <li><strong>4M Ishikawa &amp; 5-Whys Analysis:</strong> Investigated failure modes across Man, Machine, Material, and Method. Identified CNC collet runout ($>0.015\\text{mm}$) and dry-run thermal expansion as root causes.</li>
+        <li><strong>Statistical Process Control (SPC):</strong> Formulated $\\bar{X}-R$ control charts ($n=7, A_2=0.419, D_4=1.924, \\text{UCL}_{\\bar{X}}=20.03$). Caught out-of-control tool wear drift in early 2026.</li>
+        <li><strong>Pareto Uniformity Defense:</strong> Proved defects were uniformly distributed across all 6 categories (~19–20 batches each), proving systemic process variance rather than isolated operator error.</li>
+      </ul>
+
+      <p><strong>💰 Pillar 2 — COPQ Econometrics &amp; One-Way ANOVA Hypothesis Testing:</strong></p>
+      <ul>
+        <li><strong>The COPQ Paradox Resolution:</strong> Disproved the assumption that high-defect items cause the highest financial loss. Proved <strong>Plaster Cutting Saw</strong> (0.92% defect rate) drove <strong>62.2% (₹7.48 Lakhs)</strong> of total COPQ due to its ₹18,500 unit cost vs ₹120 for screws.</li>
+        <li><strong>One-Way ANOVA:</strong> $F = 38.42, p = 1.48 \\times 10^{-24} \\ll 0.001$, confirming statistically significant between-product cost divergence.</li>
+        <li><strong>Family-Wise Error Rate (FWER) Proof:</strong> Demonstrated that 21 pairwise t-tests inflate experiment-wise Type I error to $\\text{FWER} = 1 - (1 - 0.05)^{21} \\approx 65.9\\%$, mathematically justifying ANOVA.</li>
+      </ul>
+
+      <p><strong>📦 Pillar 3 — Dynamic Supply Chain &amp; Inventory Synchronization:</strong></p>
+      <ul>
+        <li><strong>ABC Pareto Classification:</strong> Stratified Class A (Plaster Saw: 62% annual value) for strict continuous review vs Class C (Bone Plates/Screws) for volume buffering.</li>
+        <li><strong>ARIMA(2,1,0) Demand Forecasting:</strong> Applied first-order differencing ($d=1$) to non-stationary sales ($R^2 > 0.80$), capturing growth velocity and eliminating the 60-day lag of moving averages.</li>
+        <li><strong>Closed-Loop Replenishment:</strong> Calibrated dynamic $\\text{EOQ} = \\sqrt{2DS/H}$, Safety Stock $\\text{SS} = Z \\cdot \\sigma_{\\text{daily}} \\sqrt{L}$ ($Z=1.65$ for 95% service level), and $\\text{ROP} = (\\bar{d} \\cdot L) + \\text{SS}$.</li>
+      </ul>
+
+      <p><strong>🎓 IIT Madras BDM Capstone Rubric Evaluation:</strong></p>
+      <ul>
+        <li><strong>1. Problem Definition (Exemplary):</strong> Real industrial engagement tackling balance-sheet leakage and hospital stockouts.</li>
+        <li><strong>2. Primary Data Collection (Exemplary):</strong> 119 physical shop-floor batch records across 17 months with zero missing data.</li>
+        <li><strong>3. Exploratory &amp; Diagnostic Analysis (Exemplary):</strong> 4M Fishbone, 5-Whys, Pareto charts, and Pearson correlation matrices ($r=0.697$).</li>
+        <li><strong>4. Statistical Rigor (Exemplary):</strong> One-Way ANOVA, FWER proof, $\\bar{X}-R$ control limits, and ARIMA time-series differencing.</li>
+        <li><strong>5. Prescriptive Optimization (Exemplary):</strong> Dynamic ABC–EOQ–ROP stochastic inventory replenishment engine.</li>
+        <li><strong>6. Quantified Business ROI (Exemplary):</strong> ₹5.10 Lakhs annual COPQ recovery, 0 stockouts on critical items, 18.4% holding cost reduction, 3.2-month payback.</li>
+        <li><strong>7. Code &amp; Deliverables (Exemplary):</strong> Production Python pipeline script, Jupyter notebook, live Excel workbook, and interactive web application.</li>
+      </ul>
+    `;
+  }
+
+  // 3. COPQ Paradox & Plaster Saw Analysis
   if (q.includes('copq') || q.includes('paradox') || q.includes('plaster saw') || q.includes('scrap') || q.includes('rework') || q.includes('12.02') || q.includes('7.48')) {
     return `
       <p><strong>The ₹12.02 Lakhs COPQ Paradox:</strong></p>
@@ -823,7 +977,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 2. ANOVA F-Test & FWER Proof
+  // 4. ANOVA F-Test & FWER Proof
   if (q.includes('anova') || q.includes('f-test') || q.includes('fwer') || q.includes('family') || q.includes('hypothesis') || q.includes('p-value') || q.includes('type i') || q.includes('38.42')) {
     return `
       <p><strong>One-Way ANOVA &amp; Family-Wise Error Rate (FWER) Proof:</strong></p>
@@ -838,7 +992,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 3. Demand Forecasting & ARIMA vs Moving Average
+  // 5. Demand Forecasting & ARIMA vs Moving Average
   if (q.includes('arima') || q.includes('moving average') || q.includes('forecast') || q.includes('time series') || q.includes('differencing') || q.includes('lag')) {
     return `
       <p><strong>Demand Forecasting: Why Moving Averages Failed vs ARIMA(2,1,0):</strong></p>
@@ -850,7 +1004,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 4. Inventory Synchronization (ABC, EOQ, Safety Stock, ROP)
+  // 6. Inventory Synchronization (ABC, EOQ, Safety Stock, ROP)
   if (q.includes('eoq') || q.includes('rop') || q.includes('safety stock') || q.includes('inventory') || q.includes('abc') || q.includes('pareto') || q.includes('lead time') || q.includes('holding cost')) {
     return `
       <p><strong>Dynamic Inventory Replenishment (ABC + EOQ + ROP):</strong></p>
@@ -862,7 +1016,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 5. 4M Ishikawa & 5-Whys Root Cause Analysis
+  // 7. 4M Ishikawa & 5-Whys Root Cause Analysis
   if (q.includes('4m') || q.includes('fishbone') || q.includes('ishikawa') || q.includes('5 why') || q.includes('whys') || q.includes('root cause') || q.includes('drift') || q.includes('collet')) {
     return `
       <p><strong>4M Ishikawa &amp; 5-Whys Root Cause Diagnosis:</strong></p>
@@ -875,7 +1029,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 6. SPC Control Limits & Drift
+  // 8. SPC Control Limits & Drift
   if (q.includes('spc') || q.includes('control limit') || q.includes('x-bar') || q.includes('r chart') || q.includes('ucl') || q.includes('lcl')) {
     return `
       <p><strong>Statistical Process Control (SPC) Limits ($n=7$):</strong></p>
@@ -888,7 +1042,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 7. Business Impact & ROI
+  // 9. Business Impact & ROI
   if (q.includes('roi') || q.includes('saving') || q.includes('business') || q.includes('benefit') || q.includes('impact') || q.includes('5.1')) {
     return `
       <p><strong>Quantified Business Impact &amp; Annual ROI:</strong></p>
@@ -901,7 +1055,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 8. Candidate Profile & Contact Info
+  // 10. Candidate Profile & Contact Info
   if (q.includes('kushal') || q.includes('batra') || q.includes('who') || q.includes('author') || q.includes('contact') || q.includes('email') || q.includes('linkedin') || q.includes('github') || q.includes('iit') || q.includes('resume')) {
     return `
       <p><strong>Candidate Profile — Kushal Batra:</strong></p>
@@ -915,7 +1069,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 9. Data Integrity & Privacy
+  // 11. Data Integrity & Privacy
   if (q.includes('privacy') || q.includes('nda') || q.includes('anonym') || q.includes('data') || q.includes('firm') || q.includes('confidential')) {
     return `
       <p><strong>Data Governance &amp; NDA Privacy Policy:</strong></p>
@@ -927,7 +1081,7 @@ function generateBotResponse(query) {
     `;
   }
 
-  // 10. Code & Artifacts
+  // 12. Code & Artifacts
   if (q.includes('code') || q.includes('python') || q.includes('excel') || q.includes('notebook') || q.includes('script') || q.includes('download')) {
     return `
       <p><strong>Audited Artifacts &amp; Code Scripts:</strong></p>
@@ -945,11 +1099,12 @@ function generateBotResponse(query) {
     <p>That is an excellent question regarding this industrial analytics audit.</p>
     <p>This project executed a <strong>17-month primary factory floor investigation</strong> across 119 manufacturing batches, delivering:</p>
     <ul>
+      <li><strong>Project Overview:</strong> An end-to-end quality and inventory optimization study across 7 orthopedic SKUs.</li>
       <li><strong>COPQ Resolution:</strong> Discovered that Plaster Saw drove 62.2% of ₹12.02L COPQ despite only 0.92% defect rate.</li>
       <li><strong>Statistical Rigor:</strong> Proved non-randomness via One-Way ANOVA ($F=38.42, p < 10^{-23}$) and defended against FWER inflation ($65.9\\%$).</li>
       <li><strong>Supply Chain Optimization:</strong> Replaced lagging 3-month moving averages with ARIMA(2,1,0) and calibrated dynamic EOQ/ROP buffers to eliminate stockouts.</li>
     </ul>
-    <p>Try asking specifically about <em>"COPQ Paradox"</em>, <em>"ANOVA Proof"</em>, <em>"ARIMA vs Moving Average"</em>, or <em>"Business ROI"</em>!</p>
+    <p>Try asking: <em>"What was the project about?"</em>, <em>"What did we do &amp; Rubrics?"</em>, or <em>"Explain the COPQ Paradox"</em>!</p>
   `;
 }
 
