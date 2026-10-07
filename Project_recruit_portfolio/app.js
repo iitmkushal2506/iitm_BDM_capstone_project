@@ -485,11 +485,20 @@ window.addEventListener('scroll', () => {
 // 9. Automatic Continuous Loop Music Player (Autoplay on Open / First Touch)
 // --------------------------------------------------------------------------
 const playlist = [
-  { title: "Don't Worry", artist: "KA • Ambient Production Track", file: "songs/dont_worry.mp3" },
-  { title: "Itz A Hustle", artist: "KA • Upbeat Focus Beat", file: "songs/itz_a_hustle.mp3" }
+  {
+    title: "Don't Worry",
+    artist: "KA • Ambient Production Track",
+    urls: ["songs/dont_worry.mp3", "./songs/dont_worry.mp3", "songs/Don't Worry_KA.mp3"]
+  },
+  {
+    title: "Itz A Hustle",
+    artist: "KA • Upbeat Focus Beat",
+    urls: ["songs/itz_a_hustle.mp3", "./songs/itz_a_hustle.mp3", "songs/Itz A Hustle_KA.mp3"]
+  }
 ];
 
 let currentTrackIndex = 0;
+let currentUrlIndex = 0;
 let isPlaying = false;
 let audioPlayer = null;
 
@@ -504,8 +513,20 @@ function initMusicPlayer() {
     nextSong();
   });
 
+  // Handle URL fallbacks if a path fails (e.g. strict case or server routing)
   audioPlayer.addEventListener('error', (e) => {
-    console.warn("Audio file notice:", e);
+    const track = playlist[currentTrackIndex];
+    if (track && track.urls && currentUrlIndex + 1 < track.urls.length) {
+      currentUrlIndex++;
+      console.warn(`Retrying audio track with fallback path: ${track.urls[currentUrlIndex]}`);
+      audioPlayer.src = track.urls[currentUrlIndex];
+      audioPlayer.load();
+      if (isPlaying) {
+        audioPlayer.play().catch(() => {});
+      }
+    } else {
+      console.warn("Audio load error:", e);
+    }
   });
 
   // Attempt instant autoplay on site load
@@ -513,11 +534,12 @@ function initMusicPlayer() {
 }
 
 function loadTrack(index) {
-  currentTrackIndex = index;
+  currentTrackIndex = (index + playlist.length) % playlist.length;
+  currentUrlIndex = 0;
   const track = playlist[currentTrackIndex];
   if (!audioPlayer) audioPlayer = document.getElementById('bgAudioPlayer');
   
-  audioPlayer.src = track.file;
+  audioPlayer.src = track.urls[0];
   audioPlayer.load();
 
   const titleEl = document.getElementById('currentTrackTitle');
@@ -556,21 +578,24 @@ function attemptAutoPlay() {
     playPromise.then(() => {
       setPlaybackUI(true);
     }).catch((err) => {
-      console.log("Browser policy blocked direct autoplay. Engaging auto-play on first user interaction:", err.name);
+      console.log("Browser policy blocked direct unmuted autoplay. Engaging auto-play on first user gesture:", err.name);
+      
+      const gestureEvents = ['click', 'touchstart', 'touchend', 'pointerup', 'keydown'];
       
       const startOnFirstGesture = () => {
-        if (!isPlaying) {
+        if (!isPlaying && audioPlayer) {
           audioPlayer.play().then(() => {
             setPlaybackUI(true);
+            // Remove listeners only after successful playback start
+            gestureEvents.forEach(evt => {
+              document.removeEventListener(evt, startOnFirstGesture, true);
+            });
           }).catch(() => {});
         }
-        ['click', 'pointerdown', 'touchstart', 'scroll', 'keydown'].forEach(evt => {
-          window.removeEventListener(evt, startOnFirstGesture, { capture: true });
-        });
       };
 
-      ['click', 'pointerdown', 'touchstart', 'scroll', 'keydown'].forEach(evt => {
-        window.addEventListener(evt, startOnFirstGesture, { capture: true, once: true });
+      gestureEvents.forEach(evt => {
+        document.addEventListener(evt, startOnFirstGesture, { capture: true, passive: true });
       });
     });
   }
@@ -580,6 +605,13 @@ function toggleMusicWidget() {
   const card = document.getElementById('musicPlayerCard');
   if (card) {
     card.classList.toggle('active');
+  }
+
+  // If user clicked the music button and audio hasn't started yet, start it immediately
+  if (!isPlaying && audioPlayer) {
+    audioPlayer.play().then(() => {
+      setPlaybackUI(true);
+    }).catch(() => {});
   }
 }
 
